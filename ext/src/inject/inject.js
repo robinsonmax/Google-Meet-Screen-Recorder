@@ -57,30 +57,16 @@ chrome.extension.sendMessage({}, function(response) {
 		const startRecording = async () => {
 			console.log("Start Recording")
 			renameRecordButton("Stop Recording")
-
-			stream = await navigator.mediaDevices.getDisplayMedia({
-				video: { mediaSource: "screen" }
-			});
-			recorder = new MediaRecorder(stream);
-		
-			const chunks = [];
-			recorder.ondataavailable = e => chunks.push(e.data);
-			recorder.onstop = e => {
-				const completeBlob = new Blob(chunks, { type: chunks[0].type });
-				saveLink.href = URL.createObjectURL(completeBlob);
-				saveLink.click();
-			};
-		
-			recorder.start();
-
+			recording = true
 		}
 
 		const stopRecording = () => {
+			if(!confirm("Are you sure you want to stop recording?")){
+				return;
+			}
 			console.log("Stop Recording")
 			renameRecordButton("Start Recording")
-
-			recorder.stop();
-		  stream.getVideoTracks()[0].stop();
+			recording = false
 		}
 
 
