@@ -53,11 +53,20 @@ chrome.extension.sendMessage({}, function(response) {
 				return false
 			}
 		}
-
+		/*
 		const startRecording = async () => {
 			console.log("Start Recording")
 			renameRecordButton("Stop Recording")
 			recording = true
+
+			//getMediaStream()
+
+			const recorder = new MediaRecorder(window.webkitMediaStream);
+			const chunks = [];
+			recorder.ondataavailable = e => chunks.push(e.data);
+			recorder.start();
+
+			//window.webkitMediaStream
 		}
 
 		const stopRecording = () => {
@@ -69,7 +78,43 @@ chrome.extension.sendMessage({}, function(response) {
 			recording = false
 		}
 
+		const getMediaStream = () => {
+
+			for(var object in window) { 
+				if(window.hasOwnProperty(object)){
+					console.log(object + " " + (typeof window[object]));
+				}  
+			}
+			*/
+
+		const startRecording = async () => {
+			console.log("Start Recording")
+			renameRecordButton("Stop Recording")
+
+			// Doesn't like this mediaSteam object
+			recorder = new MediaRecorder(window.webkitMediaStream);
+		
+			const chunks = [];
+			recorder.ondataavailable = e => chunks.push(e.data);
+			recorder.onstop = e => {
+				const completeBlob = new Blob(chunks, { type: chunks[0].type });
+				saveLink.href = URL.createObjectURL(completeBlob);
+				saveLink.click();
+			};
+		
+			recorder.start();
+
+		}
+
+		const stopRecording = () => {
+			console.log("Stop Recording")
+			renameRecordButton("Start Recording")
+
+			recorder.stop();
+			
+		}
 
 	}
+
 	}, 10);
 });
