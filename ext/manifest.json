@@ -2,7 +2,7 @@
   "name": "Google Meet Screen Recorder",
   "version": "0.0.1",
   "manifest_version": 2,
-  "description": "This extension injects itself into meet.google.com, to enable screen recordning",
+  "description": "An extension that injects itself into Google Meet, to enable screen recording",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -10,21 +10,25 @@
   },
   "default_locale": "en",
   "background": {
-    "page": "src/bg/background.html",
+    "page": "bg/background.html",
     "persistent": true
   },
   "browser_action": {
     "default_icon": "icons/icon19.png",
-    "default_title": "browser action demo",
-    "default_popup": "src/browser_action/browser_action.html"
+    "default_title": "Google Meet Screen Recorder"
   },
+  "permissions": [
+    "contentSettings",
+    "tabs",
+    "http://meet.google.com/*"
+  ],
   "content_scripts": [
     {
       "matches": [
         "https://meet.google.com/*"
       ],
       "css": [
-        "src/inject/inject.css"
+        "inject/inject.css"
       ]
     },
     {
@@ -32,7 +36,7 @@
         "https://meet.google.com/*"
       ],
       "js": [
-        "src/inject/inject.js"
+        "inject/inject.js"
       ]
     }
   ]
