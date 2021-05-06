@@ -10,11 +10,10 @@ chrome.extension.sendMessage({}, function(response) {
 	var saveLink = document.createElement("a")
 	saveLink.setAttribute("target","_blank")
 	saveLink.setAttribute("download","Google Meet Recording.mkv")
-	let recorder, stream;
-
+	let recorder;
 
 	// Get when start/stop sharing screen & find video source
-	var videoSource;
+	var videoSource = null;
 	setInterval(function() {
 		const newVideoSourcesCollection = document.getElementsByClassName(videoElementClassname)
 		const newVideoSourcesArray = Array.prototype.slice.call( newVideoSourcesCollection, 0 )
@@ -24,6 +23,7 @@ chrome.extension.sendMessage({}, function(response) {
 		if(videoSource && !newVideoSource){
 			console.log("Lost Video Source")
 			videoSource = null
+			recording = false
 			document.getElementById("custom-record-button").remove()
 		} else if(!videoSource && newVideoSource){
 			console.log("Found Video Source")
@@ -40,17 +40,17 @@ chrome.extension.sendMessage({}, function(response) {
 		recordButton.setAttribute("id", "custom-record-button")
 		recordButton.addEventListener("click", e => {
 			e.preventDefault()
-			recording = !recording
 			if(recording){
-				startRecording()
-			} else {
 				stopRecording()
+			} else {
+				startRecording()
 			}
 		})
-		console.log(recordButton)
+		recordButton.style.display = "none"
 		iconContainer.prepend(recordButton)
 		setTimeout(() => {
-			renameRecordButton("Record Screen")
+			renameRecordButton("Record Meeting",false)
+			recordButton.style.display = "flex"
 			recordButton.setAttribute("jscontroller","")
 			recordButton.setAttribute("jsaction","")
 		},1000)
@@ -62,11 +62,18 @@ chrome.extension.sendMessage({}, function(response) {
 
 
 	// Rename the record button
-	const renameRecordButton = name => {
+	const renameRecordButton = (name,makeRed) => {
 		try{
 			document.querySelector("div#custom-record-button div.I98jWb").innerText = name
 			document.querySelector("div#custom-record-button > div").setAttribute("data-tooltip", name)
 			document.querySelector("div#custom-record-button i.google-material-icons").innerText = "camera"
+			if(makeRed){
+				document.querySelector("div#custom-record-button div.I98jWb").style.color = "#f11"
+				document.querySelector("div#custom-record-button i.google-material-icons").style.color = "#f11"
+			} else {
+				document.querySelector("div#custom-record-button div.I98jWb").style.color = "#5f6368"
+				document.querySelector("div#custom-record-button i.google-material-icons").style.color = "#5f6368"
+			}
 			return true
 		} catch (e) {
 			return false
@@ -76,8 +83,25 @@ chrome.extension.sendMessage({}, function(response) {
 
 	const startRecording = async () => {
 		console.log("Start Recording")
-		renameRecordButton("Stop Recording")
+		renameRecordButton("Stop Recording",true)
+		recording = true
 
+		console.log("Video Source")
+    console.log(videoSource)
+
+		recorder = new MediaRecorder(videoSource)
+
+		const chunks = [];
+		recorder.ondataavailable = e => chunks.push(e.data);
+		recorder.onstop = e => {
+			const completeBlob = new Blob(chunks, { type: chunks[0].type });
+			saveLink.href = URL.createObjectURL(completeBlob);
+			saveLink.click();
+		};
+	
+		recorder.start();
+
+		/*
 		stream = await navigator.mediaDevices.getDisplayMedia({
 			video: { mediaSource: "screen" }
 		});
@@ -92,15 +116,26 @@ chrome.extension.sendMessage({}, function(response) {
 		};
 	
 		recorder.start();
+		*/
 
 	}
 
 	const stopRecording = () => {
-		console.log("Stop Recording")
-		renameRecordButton("Start Recording")
+		if(confirm("Are you sure you want to stop the recording?")){
 
+			console.log("Stop Recording")
+			renameRecordButton("Record Meeting",false)
+			recording = false
+
+			recorder.stop();
+
+		}
+
+		/*
 		recorder.stop();
 		stream.getVideoTracks()[0].stop();
+		*/
+
 	}
 
 });
