@@ -20,15 +20,24 @@ chrome.extension.sendMessage({}, function(response) {
 		// Set video source to the left most video element on screen that's less than 100px wide
 		var newVideoSource = null;
 		newVideoSource = newVideoSourcesArray.filter(v => v.offsetWidth <= 100 && v.style.display !== "none").sort((v1,v2) => v1.getBoundingClientRect().left - v2.getBoundingClientRect().left)[0]
-		if(videoSource && !newVideoSource){
-			console.log("Lost Video Source")
-			videoSource = null
-			recording = false
-			document.getElementById("custom-record-button").remove()
-		} else if(!videoSource && newVideoSource){
-			console.log("Found Video Source")
-			videoSource = newVideoSource.srcObject
-			injectRecordButton()
+		
+		// If the video source changes (e.g. stops or gone from camera to screen)
+		if(newVideoSource !== videoSource){
+			if(newVideoSource){
+				console.log("Found Video Source")
+			  videoSource = newVideoSource
+				try{ // Remove button if already exists (from camera)
+					document.getElementById("custom-record-button").remove()
+				} catch (e) {}
+			  injectRecordButton()
+			} else {
+				console.log("Lost Video Source")
+				videoSource = newVideoSource
+				recording = false
+				try{
+					document.getElementById("custom-record-button").remove()
+				} catch (e) {}
+			}
 		}
 	},1000)
 
@@ -89,7 +98,7 @@ chrome.extension.sendMessage({}, function(response) {
 		console.log("Video Source")
     console.log(videoSource)
 
-		recorder = new MediaRecorder(videoSource)
+		recorder = new MediaRecorder(videoSource.srcObject)
 
 		const chunks = [];
 		recorder.ondataavailable = e => chunks.push(e.data);
@@ -100,24 +109,6 @@ chrome.extension.sendMessage({}, function(response) {
 		};
 	
 		recorder.start();
-
-		/*
-		stream = await navigator.mediaDevices.getDisplayMedia({
-			video: { mediaSource: "screen" }
-		});
-		recorder = new MediaRecorder(stream);
-	
-		const chunks = [];
-		recorder.ondataavailable = e => chunks.push(e.data);
-		recorder.onstop = e => {
-			const completeBlob = new Blob(chunks, { type: chunks[0].type });
-			saveLink.href = URL.createObjectURL(completeBlob);
-			saveLink.click();
-		};
-	
-		recorder.start();
-		*/
-
 	}
 
 	const stopRecording = () => {
@@ -130,12 +121,6 @@ chrome.extension.sendMessage({}, function(response) {
 			recorder.stop();
 
 		}
-
-		/*
-		recorder.stop();
-		stream.getVideoTracks()[0].stop();
-		*/
-
 	}
 
 });
