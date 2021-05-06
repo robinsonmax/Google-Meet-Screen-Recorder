@@ -1,0 +1,42 @@
+<!doctype html>
+<head>
+	<title>Google Meet Screen Recorder</title>
+	<link rel="stylesheet" href="./convert.css">
+</head>
+<body>
+	<h1>Convert Recording</h1>
+	<p>Once you've finished a recoring, it'll be converted to a .mp4 file here.</p>
+	<table>
+		<tr>
+			<th style="width: 60px">Recorded</th>
+			<th style="width: 60px">Duration</th>
+			<th>Progress</th>
+			<th style="width: 20px"></th>
+		</tr>
+		<tr>
+			<td><p>01/01/2000</p><p>00:00:00</p></td>
+			<td><p>00:02:47</p></td>
+			<td><p>Ready to <a href="#">download</a></p></td>
+			<td><span id="delete" class="delete">X</span></td>
+		</tr>
+		<tr>
+			<td><p>01/01/2000</p><p>00:00:00</p></td>
+			<td><p>00:06:19</p></td>
+			<td><progress id="file1" value="35" max="100"></progress></td>
+			<td><span class="delete">X</span></td>
+		</tr>
+		<tr>
+			<td><p>01/01/2000</p><p>00:00:00</p></td>
+			<td><p>00:04:20</p></td>
+			<td><progress id="file2" value="0" max="100"></progress></td>
+			<td><span class="delete">X</span></td>
+		</tr>
+		<tr>
+			<td><p>01/01/2000</p><p>00:00:00</p></td>
+			<td><p>00:01:23</p></td>
+			<td><p>Pending</p></td>
+			<td><span class="delete">X</span></td>
+		</tr>
+	</table>
+	<script src="./convert.js"></script>
+</body>

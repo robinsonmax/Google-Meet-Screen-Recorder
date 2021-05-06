@@ -1,4 +1,18 @@
+
+const videoElementClassname = "Gv1mTb-aTv5jf"
+
 chrome.extension.sendMessage({}, function(response) {
+	var videoSource;
+	setInterval(function() {
+		const newVideoSource = document.getElementsByClassName(videoElementClassname)
+		if(videoSource && newVideoSource.length != 1){
+			console.log("Lost Video Source")
+			videoSource = null
+		} else if(!videoSource && newVideoSource.length > 0){
+			console.log("Found Video Source")
+			videoSource = newVideoSource[0].srcObject
+		}
+	},500)
 	var readyStateCheckInterval = setInterval(function() {
 	if (document.readyState === "complete") {
 		clearInterval(readyStateCheckInterval);
