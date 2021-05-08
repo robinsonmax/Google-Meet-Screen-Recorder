@@ -32,8 +32,12 @@ chrome.extension.sendMessage({}, function(response) {
 			  injectRecordButton()
 			} else {
 				console.log("Lost Video Source")
+				if(recording){
+					stopRecording(true)
+				} else {
+					recording = false
+				}
 				videoSource = newVideoSource
-				recording = false
 				try{
 					document.getElementById("custom-record-button").remove()
 				} catch (e) {}
@@ -111,8 +115,8 @@ chrome.extension.sendMessage({}, function(response) {
 		recorder.start();
 	}
 
-	const stopRecording = () => {
-		if(confirm("Are you sure you want to stop the recording?")){
+	const stopRecording = (skipConfirmation = false) => {
+		if(skipConfirmation || confirm("Are you sure you want to stop the recording?")){
 
 			console.log("Stop Recording")
 			renameRecordButton("Record Meeting",false)
