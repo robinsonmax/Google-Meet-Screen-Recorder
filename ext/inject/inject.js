@@ -99,9 +99,6 @@ chrome.extension.sendMessage({}, function(response) {
 		renameRecordButton("Stop Recording",true)
 		recording = true
 
-		console.log("Video Source")
-    console.log(videoSource)
-
 		recorder = new MediaRecorder(videoSource.srcObject)
 
 		const chunks = [];
