@@ -1,6 +1,7 @@
 
 const videoElementClassname = "Gv1mTb-aTv5jf" // This is for finding the video source of the shared screen
 
+
 chrome.extension.sendMessage({}, function(response) {
 
 
