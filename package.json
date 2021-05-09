@@ -1,0 +1,23 @@
+{
+  "name": "google-meet-screen-recorder",
+  "version": "1.0.0",
+  "description": "A browser extension that injects a record button into Google Meet",
+  "main": "index.js",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0"
+  },
+  "scripts": {
+    "start": "babel-node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robinsonmax/Google-Meet-Screen-Recorder.git"
+  },
+  "author": "Max Robinson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/robinsonmax/Google-Meet-Screen-Recorder/issues"
+  },
+  "homepage": "https://github.com/robinsonmax/Google-Meet-Screen-Recorder#readme"
+}
