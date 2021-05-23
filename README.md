@@ -1,4 +1,5 @@
 # Google Meet Screen Recorder
+A Chrome extension injecting a record button into Google Meet
 
 # To Do
 
